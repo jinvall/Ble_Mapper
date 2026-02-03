@@ -59,14 +59,20 @@ dependencies {
     androidTestImplementation(composeBom)
 
     // Compose core
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material3:material3:1.2.1")
+	implementation("androidx.compose.ui:ui")
+	implementation("androidx.compose.ui:ui-tooling-preview")
+
+	// Material3 core
+	implementation("androidx.compose.material3:material3:1.2.1")
 	implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-	implementation("androidx.compose.material3:material3-adaptive:1.0.0")
-	implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0")
-	implementation("androidx.compose.material3:material3-theme-adapter:1.2.1")
+
+	// Material3 adaptive (REAL versions)
+	implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha04")
+	implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha04")
+
+	// Material3 theme adapter (LAST published version)
+	implementation("androidx.compose.material3:material3-theme-adapter:1.1.2")
+
 
 
     // Activity + Compose integration
