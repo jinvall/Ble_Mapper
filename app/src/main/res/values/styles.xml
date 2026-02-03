@@ -1,0 +1,11 @@
+<!-- /data/data/com.termux/files/home/Blu/BleMapper/app/src/main/res/values/styles.xml -->
+
+<resources>
+
+    <!-- Material 3 Day/Night theme with no action bar -->
+    <style name="Theme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+</resources>
