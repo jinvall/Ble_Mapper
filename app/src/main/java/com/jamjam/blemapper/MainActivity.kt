@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.bluetooth.le.ScanResult
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,14 +23,12 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var scannerService: BLEScannerService
 
-    // ---- REQUIRED PERMISSIONS ----
     private val requiredPermissions = arrayOf(
         Manifest.permission.BLUETOOTH_SCAN,
         Manifest.permission.BLUETOOTH_CONNECT,
         Manifest.permission.ACCESS_FINE_LOCATION
     )
 
-    // ---- PERMISSION LAUNCHER ----
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             val allGranted = results.values.all { it }
@@ -63,7 +62,6 @@ class MainActivity : ComponentActivity() {
         scannerService.stop()
     }
 
-    // ---- PERMISSION CHECK ----
     private fun Context.hasAllPermissions(): Boolean =
         requiredPermissions.all {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
@@ -71,20 +69,29 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DeviceList(devices: List<com.jamjam.blemapper.ble.BLEDevice>) {
+fun DeviceList(devices: List<ScanResult>) {
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        items(devices) { device ->
-            DeviceRow(device)
+        items(devices) { result ->
+            DeviceRow(result)
         }
     }
 }
 
 @Composable
-fun DeviceRow(device: com.jamjam.blemapper.ble.BLEDevice) {
+fun DeviceRow(result: ScanResult) {
     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-        Text(text = device.name ?: "Unknown Device", style = MaterialTheme.typography.bodyLarge)
-        Text(text = device.address, style = MaterialTheme.typography.bodyMedium)
-        Text(text = "RSSI: ${device.rssi}", style = MaterialTheme.typography.bodySmall)
+        Text(
+            text = result.device.name ?: "Unknown Device",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = result.device.address,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            text = "RSSI: ${result.rssi}",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 
