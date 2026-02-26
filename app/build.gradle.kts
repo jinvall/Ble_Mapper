@@ -59,18 +59,15 @@ dependencies {
     androidTestImplementation(composeBom)
 
     // Compose core
-	implementation("androidx.compose.ui:ui")
-	implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
 
-	// Material3 core
-	implementation("androidx.compose.material3:material3:1.2.1")
-	implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    // Material3 (Compose)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
 
-	// Material3 adaptive (REAL versions)
-	implementation("androidx.compose.material3:material3-adaptive:1.0.0-alpha04")
-	
-
-	
+    // XML Material3 theme provider (Theme.Material3.DayNight.NoActionBar)
+    implementation("com.google.android.material:material:1.12.0")
 
     // Activity + Compose integration
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -78,7 +75,7 @@ dependencies {
     // Lifecycle (for state handling)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
-    // BLE scanning uses Android framework APIs — no extra libs needed
+    // Core KTX
     implementation("androidx.core:core-ktx:1.12.0")
 
     // Debug tools

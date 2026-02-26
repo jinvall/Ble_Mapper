@@ -1,6 +1,6 @@
 <resources>
-    <style name="Theme.BleMapper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- No window flags. No action bar flags. -->
+    <style name="Theme.BleMapper" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- App-wide theming goes here if/when you need it -->
     </style>
 </resources>
 
