@@ -1,10 +1,8 @@
-// /data/data/com.termux/files/home/Blu/BleMapper/app/src/main/java/com/jamjam/blemapper/MainActivity.kt
-
 package com.jamjam.blemapper
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,13 +22,29 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var scannerService: BLEScannerService
 
+    // ---- REQUIRED PERMISSIONS ----
+    private val requiredPermissions = arrayOf(
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    // ---- PERMISSION LAUNCHER ----
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            val allGranted = results.values.all { it }
+            if (allGranted) {
+                scannerService.start()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         scannerService = BLEScannerService(this)
 
         if (!hasAllPermissions()) {
-            permissionLauncher.launch(requiredPermissions.toTypedArray())
+            permissionLauncher.launch(requiredPermissions)
         } else {
             scannerService.start()
         }
@@ -47,6 +61,30 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         scannerService.stop()
+    }
+
+    // ---- PERMISSION CHECK ----
+    private fun Context.hasAllPermissions(): Boolean =
+        requiredPermissions.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+}
+
+@Composable
+fun DeviceList(devices: List<com.jamjam.blemapper.ble.BLEDevice>) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        items(devices) { device ->
+            DeviceRow(device)
+        }
+    }
+}
+
+@Composable
+fun DeviceRow(device: com.jamjam.blemapper.ble.BLEDevice) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+        Text(text = device.name ?: "Unknown Device", style = MaterialTheme.typography.bodyLarge)
+        Text(text = device.address, style = MaterialTheme.typography.bodyMedium)
+        Text(text = "RSSI: ${device.rssi}", style = MaterialTheme.typography.bodySmall)
     }
 }
 
