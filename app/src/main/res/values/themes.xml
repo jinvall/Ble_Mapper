@@ -1,7 +1,3 @@
-<!-- app/src/main/res/values/themes.xml -->
 <style name="Theme.BleMapper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-    <item name="windowNoTitle">true</item>
-    <item name="windowActionBar">false</item>
 </style>
-
 
