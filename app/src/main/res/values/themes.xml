@@ -1,3 +1,6 @@
-<style name="Theme.BleMapper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-</style>
+<resources>
+    <style name="Theme.BleMapper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- No window flags. No action bar flags. -->
+    </style>
+</resources>
 
