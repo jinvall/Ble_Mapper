@@ -1,47 +1,97 @@
-// /data/data/com.termux/files/home/Blu/BleMapper/app/src/main/java/com/jamjam/blemapper/ble/BLEScannerService.kt
-package com.jamjam.blemapper.ble
+package com.jamjam.blemapper
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
-import android.bluetooth.le.BluetoothLeScanner
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
+import android.Manifest
 import android.content.Context
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.bluetooth.le.ScanResult
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.jamjam.blemapper.ble.BLEScannerService
+import com.jamjam.blemapper.ui.theme.BleMapperTheme
 
-class BLEScannerService(context: Context) {
+class MainActivity : ComponentActivity() {
 
-    private val bluetoothManager =
-        context.getSystemService(BluetoothManager::class.java)
+    private lateinit var scannerService: BLEScannerService
 
-    private val bluetoothAdapter: BluetoothAdapter? =
-        bluetoothManager.adapter
+    private val requiredPermissions = arrayOf(
+        Manifest.permission.BLUETOOTH_SCAN,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
 
-    private val scanner: BluetoothLeScanner? =
-        bluetoothAdapter?.bluetoothLeScanner
-
-    val devices: SnapshotStateList<ScanResult> = mutableStateListOf()
-
-    private val callback = object : ScanCallback() {
-        override fun onScanResult(type: Int, result: ScanResult) {
-            val index = devices.indexOfFirst {
-                it.device.address == result.device.address
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            val allGranted = results.values.all { it }
+            if (allGranted) {
+                scannerService.start()
             }
-            if (index == -1) {
-                devices.add(result)
-            } else {
-                devices[index] = result
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        scannerService = BLEScannerService(this)
+
+        if (!hasAllPermissions()) {
+            permissionLauncher.launch(requiredPermissions)
+        } else {
+            scannerService.start()
+        }
+
+        setContent {
+            BleMapperTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    DeviceList(scannerService.devices)
+                }
             }
         }
     }
 
-    fun start() {
-        scanner?.startScan(callback)
+    override fun onDestroy() {
+        super.onDestroy()
+        scannerService.stop()
     }
 
-    fun stop() {
-        scanner?.stopScan(callback)
+    private fun Context.hasAllPermissions(): Boolean =
+        requiredPermissions.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+}
+
+@Composable
+fun DeviceList(devices: List<ScanResult>) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        items(devices) { result ->
+            DeviceRow(result)
+        }
+    }
+}
+
+@Composable
+fun DeviceRow(result: ScanResult) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+        Text(
+            text = result.device.name ?: "Unknown Device",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = result.device.address,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            text = "RSSI: ${result.rssi}",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 
