@@ -1,11 +1,7 @@
 <!-- app/src/main/res/values/themes.xml -->
-<resources>
+<style name="Theme.BleMapper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+</style>
 
-    <!-- Minimal host theme for Compose Material3 -->
-    <style name="Theme.BleMapper" parent="Theme.Material3.DayNight">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-    </style>
-
-</resources>
 

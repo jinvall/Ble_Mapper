@@ -71,7 +71,7 @@ dependencies {
 	implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha04")
 
 	// Material3 theme adapter (LAST published version)
-	implementation("androidx.compose.material3:material3-theme-adapter:1.1.2")
+	//implementation("androidx.compose.material3:material3-theme-adapter:1.1.2")
 
 
 
